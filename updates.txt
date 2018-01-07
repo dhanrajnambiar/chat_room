@@ -1,0 +1,6 @@
+6th Jan 2018:
+1) Started second assignment
+	created riot.im account and two test chat rooms. saved the access token of my account.
+	started going through the api's of matrix, which would be needed for the django project.
+	how to convert curl commands in api's to functions of requests module
+	
