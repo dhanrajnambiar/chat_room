@@ -1,4 +1,4 @@
-6th Jan 2018:
+﻿6th Jan 2018:
 a) Started with second assignment
 b)created riot.im account and two test chat rooms. saved the access token of my account.
 c)started going through the api's of matrix, which would be needed for the django project.
@@ -6,7 +6,7 @@ d)how to convert curl commands in api's to functions of requests module
 	
 8th Jan 2018:
 
-a)Installed matrix-synapse which would be nedded to test things locally. Installed correctly. Configuring synapse got lot of import error. solved some of them. But few other error's is about missing packages.
+Installed matrix-synapse which would be nedded to test things locally. Installed correctly. Configuring synapse got lot of import error. solved some of them. But few other error's is about missing packages.
 
 Error1:
 ImportError: No module named 'Queue'
@@ -19,7 +19,7 @@ vi lib/python3.5/site-packages/synapse/storage/event_federation.py
 entered "from multiprocessing import Queue"
 and tried configuring again.
 But still the same error
-There is no other file Queue.py in the directory containing the event_federeation.py file 
+There is no other file named Queue.py in the directory containing the event_federeation.py file 
 rectified that mistake by renaming Queue with queue
 
 Similar errors related to packages compatability between python2 and python3
@@ -28,4 +28,78 @@ Uninstalled the done installation and trying to install based on python2.7
 got the synapse server running
 
 
- 
+9th jan 2018:
+
+REGISTER:
+registered a new user in local server using curl command
+
+''' curl -XPOST -d '{"username":"example", "password":"wordpass", "auth": {"type":"m.login.dummy"}}' "https://localhost:8448/_matrix/client/r0/register" '''
+error with ssl certficate
+entered the same above command using "-k" option of curl to get it done.
+
+tried to do the same with python's requests module.
+set 'verify = False' to avoid ssl certificate issue.
+
+d = {"username":"dhanesh","password":"XXXXXXX", "auth":{"type":"m.login.dummy"}}
+url = "https://localhost:8448/_matrix/client/r0/register"
+headers = {'content-type':'application/json'}
+r = requests.post(url,data = json.dumps(d),headers = headers, verify = False)
+
+r.content
+b'{"access_token":"MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI2Y2lkIHVzZXJfaWQgPSBAZGhhbmVzaDpkaGFuX2xvY2FsCjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gNUBjMjFuYUVoSCNWQ1ArKwowMDJmc2lnbmF0dXJlIGeHMXPC1TT69XHvpP3Tnoa-pe7DMkkONJ6DRdh7EjxsCg","home_server":"dhan_local","user_id":"@dhanesh:dhan_local","device_id":"SVAHJLNZDU"}'
+
+Following below also works
+d = {"username":"David","password":"XXXXXXXX", "auth":{"type":"m.login.dummy"}}
+r = requests.post(url,data = json.dumps(d),verify = False)
+
+r.content.decode()
+'{"access_token":"MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDUyKmNZZG0wRkppYWFRYi0KMDAyZnNpZ25hdHVyZSDbiTgWDHLhxnbAx97LpLeDHl3wR5ErIMMPe4OZoWYFfwo","home_server":"dhan_local","user_id":"@david:dhan_local","device_id":"HGUHQFJKKD"}'
+
+LOGIN:
+
+How to log in a existing user
+d = {"user":"David","password":"XXXXXX", "type":"m.login.password"}
+l = requests.post(url, data = json.dumps(d),verify = False)
+l.content
+b'{"access_token":"MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDFHdU1ScjBJMV5mZ0BjZUMKMDAyZnNpZ25hdHVyZSCaT3CQagq6bDYLANtf54vc2ym3wnwVFkafIt25vnnlHgo","home_server":"dhan_local","user_id":"@david:dhan_local","device_id":"CJWSGOEJWS"}'
+
+
+ROOM CREATION:
+Creating a room in local server
+
+acc_token = "MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDFHdU1ScjBJMV5mZ0BjZUMKMDAyZnNpZ25hdHVyZSCaT3CQagq6bDYLANtf54vc2ym3wnwVFkafIt25vnnlHgo"
+url = "https://localhost:8448/_matrix/client/r0/createRoom?access_token=%s" % acc_token
+q = requests.post(url,data = json.dumps(d),verify = False)
+q.content
+b'{"room_alias":"#test_room_1:dhan_local","room_id":"!uYIlniPHepLWKSnpXT:dhan_local"}'
+
+GET STATUS OF ROOMS:
+
+r = requests.get("https://localhost:8448/_matrix/client/r0/sync?access_token=MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDFHdU1ScjBJMV5mZ0BjZUMKMDAyZnNpZ25hdHVyZSCaT3CQagq6bDYLANtf54vc2ym3wnwVFkafIt25vnnlHgo", verify = False)
+
+>>>for i in json.loads(r.content.decode()):
+...     print(i)
+... 
+rooms
+device_lists
+groups
+account_data
+to_device
+presence
+device_one_time_keys_count
+next_batch
+
+SENDING MESSAGE TO ROOM:
+
+Tried to use previously created user named "dhanesh" to message to 'test_room_1'. got an ERROR
+
+d = {"msgtype":"m.text","body":"hellooo"}
+
+url = "https://localhost:8448/_matrix/client/r0/rooms/%21!uYIlniPHepLWKSnpXT:localhost/send/m.room.message?access_token=MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI2Y2lkIHVzZXJfaWQgPSBAZGhhbmVzaDpkaGFuX2xvY2FsCjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gNUBjMjFuYUVoSCNWQ1ArKwowMDJmc2lnbmF0dXJlIGeHMXPC1TT69XHvpP3Tnoa-pe7DMkkONJ6DRdh7EjxsCg"
+
+a = requests.post(url, data = json.dumps(d), verify = False)
+
+a.content
+b'{"errcode":"M_UNKNOWN","error":"Room \'!!uYIlniPHepLWKSnpXT:localhost\' does not exist"}'
+
+
