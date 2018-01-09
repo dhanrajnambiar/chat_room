@@ -25,4 +25,7 @@ rectified that mistake by renaming Queue with queue
 Similar errors related to packages compatability between python2 and python3
 Uninstalled the done installation and trying to install based on python2.7
 
+got the synapse server running
+
+
  
