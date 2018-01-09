@@ -1,6 +1,28 @@
 6th Jan 2018:
-1) Started second assignment
-	created riot.im account and two test chat rooms. saved the access token of my account.
-	started going through the api's of matrix, which would be needed for the django project.
-	how to convert curl commands in api's to functions of requests module
+a) Started with second assignment
+b)created riot.im account and two test chat rooms. saved the access token of my account.
+c)started going through the api's of matrix, which would be needed for the django project.
+d)how to convert curl commands in api's to functions of requests module
 	
+8th Jan 2018:
+
+a)Installed matrix-synapse which would be nedded to test things locally. Installed correctly. Configuring synapse got lot of import error. solved some of them. But few other error's is about missing packages.
+
+Error1:
+ImportError: No module named 'Queue'
+
+>>> pip3 install Queue
+Could not find a version that satisfies the requirement Queue (from versions: )
+No matching distribution found for Queue
+
+vi lib/python3.5/site-packages/synapse/storage/event_federation.py
+entered "from multiprocessing import Queue"
+and tried configuring again.
+But still the same error
+There is no other file Queue.py in the directory containing the event_federeation.py file 
+rectified that mistake by renaming Queue with queue
+
+Similar errors related to packages compatability between python2 and python3
+Uninstalled the done installation and trying to install based on python2.7
+
+ 
