@@ -1,7 +1,88 @@
+10th jan 2018:
+--------------
+error running synapse server "port 8448 already in use"
+used "fuser -k 8448/tcp" to get around this problem. Did "synctl start" to start synapse server again.
+
+Today tried to use api's directly from matrix.org rather than local server.
+
+There are 2 types of user to matrix a) user b) guest
+
+register "guest" user to matrix.org server:(works fine)
+____________________________________
+>>> d = {"username":"Catherine3982","password":"cathy123","bind_email":False}
+>>> url = "https://matrix.org:8448/_matrix/client/r0/register?kind=guest"
+>>> r = requests.post(url,data = json.dumps(d), verify = False)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:794: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.org/en/latest/security.html
+  InsecureRequestWarning)
+>>> r
+<Response [200]>
+>>> r.content
+b'{"access_token":"MDAxOGxvY2F0aW9uIG1hdHJpeC5vcmcKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI1Y2lkIHVzZXJfaWQgPSBANTI0MTIxOm1hdHJpeC5vcmcKMDAxNmNpZCB0eXBlID0gYWNjZXNzCjAwMjFjaWQgbm9uY2UgPSAjb0omOFBOOlM6Q2JnLnphCjAwMTVjaWQgZ3Vlc3QgPSB0cnVlCjAwMmZzaWduYXR1cmUgeCF4iLi5bZz0iLY7EOVTKrwc32W12V8JaHX6WjuTKDIK",
+"home_server":"matrix.org","user_id":"@524121:matrix.org","device_id":"guest_device"}'
+
+login "guest" user to matrix.org: (got error's)
+_______________________________
+Get's error's "Invalid password" while trying to login recently created guest account
+
+d = {"user":"@524121:matrix.org","password":"cathy123","type":"m.login.password"}
+url = "https://matrix.org:8448/_matrix/client/r0/login"
+r = request.post(url,data = json.dumps(d),verify = False)
+>>>r.content
+b'{"errcode":"M_FORBIDDEN","error":"Invalid password"}'
+
+tried "Catherine3982","@Catherine3982:matrix.org", as value to "user" key; but same error
+
+register user to matrix.org server: (didn't try out after first stage. felt it's unnecessary)
+_____________________________________
+Its a multistaged interactive process called flows
+Each flows may have different stages
+status_code 401 is returned by server, until registration is successfully completed with status_code = 200
+"session" key remains constant throughout the stages. it must be returned within "auth" key during interactions. "auth" key also contains "type" & another key corresponding to stage in which the process is in. When a stage is completed the server returns a "complete" key containing stages completed.
+
+But not necessary for this project i feel..
+
+login my already registered account at riot.im:(works fine)
+______________________________________________
+
+>>> d = {"user":"dhanraj","password":"its hidden","type":"m.login.password"}
+>>> url = "https://matrix.org:8448/_matrix/client/r0/login"
+>>> r = requests.post(url,data = json.dumps(d), verify = False)
+/usr/lib/python3/dist-packages/urllib3/connectionpool.py:794: InsecureRequestWarning: Unverified HTTPS request is being made. Adding certificate verification is strongly advised. See: https://urllib3.readthedocs.org/en/latest/security.html
+  InsecureRequestWarning)
+>>> r
+<Response [200]>
+>>> r.content
+b'{"access_token":"MDAxOGxvY2F0aW9uIG1hdHJpeC5vcmcKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI2Y2lkIHVzZXJfaWQgPSBAZGhhbnJhajptYXRyaXgub3JnCjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gVnQ9YkpuclQsLix2OXZPeAowMDJmc2lnbmF0dXJlIAxri4cRqvOiGGkvWBKNA_rs7YpBxpzK29fktFaY3d8Cg",
+"home_server":"matrix.org","user_id":"@dhanraj:matrix.org","device_id":"WAXINUFSZZ"}'
+
+logging in my already registered account works. But the guest user account (created today) login doesn't work
+
+messaging to a created room:(works fine)
+____________________________
+access_token used is the one obtained during logging in.
+Using curl works...
+
+curl -XPOST -k -d '{"msgtype":"m.text", "body":"hello"}' "https://matrix.org:8448/_matrix/client/r0/rooms/%21whKbuarNiMcNeMMlVg:matrix.org/send/m.room.message?access_token=MDAxOGxvY2F0aW9uIG1hdHJpeC5vcmcKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI2Y2lkIHVzZXJfaWQgPSBAZGhhbnJhajptYXRyaXgub3JnCjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gVnQ9YkpuclQsLix2OXZPeAowMDJmc2lnbmF0dXJlIAxri4cRqvOiGGkvWBKNA_rs7YpBxpzK29fktFaY3d8-Cg"
+{
+    "event_id": "$15156022131059360Pliup:matrix.org"
+}
+
+Using requests module of python.........
+
+>>>data_to_post = {"msgtype":"m.text","body":"Helloooo!!!"}
+>>>r_id = "whKbuarNiMcNeMMlVg:matrix.org"
+>>>acc = "MDAxOGxvY2F0aW9uIG1hdHJpeC5vcmcKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI2Y2lkIHVzZXJfaWQgPSBAZGhhbnJhajptYXRyaXgub3JnCjAwMTZjaWQgdHlwZSA9IGFjY2VzcwowMDIxY2lkIG5vbmNlID0gVnQ9YkpuclQsLix2OXZPeAowMDJmc2lnbmF0dXJlIAxri4cRqvOiGGkvWBKNA_rs7YpBxpzK29fktFaY3d8-Cg"
+>>> url = "https://matrix.org:8448/_matrix/client/r0/rooms/%21{0}/send/m.room.message?access_token={1}".format(r_id, acc)
+>>>r = requests.post(url, data = json.dumps(data_to_post), verify = False)
+>>>r.content
+b'{"event_id":"$15156030601074833cfSlS:matrix.org"}'
+
+
 9th jan 2018:
 -------------
 
 REGISTER:
+________
 registered a new user in local server using curl command
 
 ''' curl -XPOST -d '{"username":"example", "password":"wordpass", "auth": {"type":"m.login.dummy"}}' "https://localhost:8448/_matrix/client/r0/register" '''
@@ -27,15 +108,15 @@ r.content.decode()
 '{"access_token":"MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDUyKmNZZG0wRkppYWFRYi0KMDAyZnNpZ25hdHVyZSDbiTgWDHLhxnbAx97LpLeDHl3wR5ErIMMPe4OZoWYFfwo","home_server":"dhan_local","user_id":"@david:dhan_local","device_id":"HGUHQFJKKD"}'
 
 LOGIN:
-
+______
 How to log in a existing user
 d = {"user":"David","password":"XXXXXX", "type":"m.login.password"}
 l = requests.post(url, data = json.dumps(d),verify = False)
 l.content
 b'{"access_token":"MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDFHdU1ScjBJMV5mZ0BjZUMKMDAyZnNpZ25hdHVyZSCaT3CQagq6bDYLANtf54vc2ym3wnwVFkafIt25vnnlHgo","home_server":"dhan_local","user_id":"@david:dhan_local","device_id":"CJWSGOEJWS"}'
 
-
 ROOM CREATION:
+_____________
 Creating a room in local server
 
 acc_token = "MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDFHdU1ScjBJMV5mZ0BjZUMKMDAyZnNpZ25hdHVyZSCaT3CQagq6bDYLANtf54vc2ym3wnwVFkafIt25vnnlHgo"
@@ -45,7 +126,7 @@ q.content
 b'{"room_alias":"#test_room_1:dhan_local","room_id":"!uYIlniPHepLWKSnpXT:dhan_local"}'
 
 GET STATUS OF ROOMS:
-
+___________________
 r = requests.get("https://localhost:8448/_matrix/client/r0/sync?access_token=MDAxOGxvY2F0aW9uIGRoYW5fbG9jYWwKMDAxM2lkZW50aWZpZXIga2V5CjAwMTBjaWQgZ2VuID0gMQowMDI0Y2lkIHVzZXJfaWQgPSBAZGF2aWQ6ZGhhbl9sb2NhbAowMDE2Y2lkIHR5cGUgPSBhY2Nlc3MKMDAyMWNpZCBub25jZSA9IDFHdU1ScjBJMV5mZ0BjZUMKMDAyZnNpZ25hdHVyZSCaT3CQagq6bDYLANtf54vc2ym3wnwVFkafIt25vnnlHgo", verify = False)
 
 >>>for i in json.loads(r.content.decode()):
@@ -61,7 +142,7 @@ device_one_time_keys_count
 next_batch
 
 SENDING MESSAGE TO ROOM:
-
+_______________________
 Tried to use previously created user named "dhanesh" to message to 'test_room_1'. got an ERROR
 
 d = {"msgtype":"m.text","body":"hellooo"}
