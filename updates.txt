@@ -43,9 +43,20 @@ This problem existed with using matrix-synapse local server
 
 Hosting in pythonanywhere.com:
 ______________________________
+Tried hosting in local server .
+App works fine
+
+Tried to host in pythonanywhere.com with my account.
+But failed due to "filenotfound error" in pythonanywhere server. File containing the access key not found error; arising from function in 'startup.py' file
+
+tried appending file's location to sys.path:
+
+  path2 = os.path.dirname(os.path.expanduser(os.path.abspath(__file__)))
+  if path2 not in sys.path:
+        sys.path.append('path2')
 
 
-
+But still the same error..
 
 10th jan 2018:
 --------------
