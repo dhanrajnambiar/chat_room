@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include "head_css.html" %}
+  </head>
+
+  <body>
+    <div class="container">
+      <header class="header clearfix">
+        {% include "navbar.html" %}
+        <h3 class="text-muted">RIOT CHAT</h3>
+      </header>
+
+      <main role="main">
+        <div class="jumbotron">
+          {%block content %}
+          {% endblock %}
+        </div>
+      </main>
+    </div> <!-- /container -->
+  </body>
+</html>
