@@ -1,5 +1,5 @@
 12th jan 2018:
---------------
+---------------
 Succeded in rectifying file not found error by importing 'BASE_DIR' parameter from settings module
 and using os.path.join(BASE_DIR, 'key.py') to obtain the file path & using open() on the file path.
 Found a hint that certain keys can be stored as environment var's in wsgi.py file. But didn't try out
