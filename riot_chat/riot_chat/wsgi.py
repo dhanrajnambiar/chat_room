@@ -8,13 +8,11 @@ https://docs.djangoproject.com/en/2.0/howto/deployment/wsgi/
 """
 
 import os
-
 from django.core.wsgi import get_wsgi_application
-from . startup import *
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "riot_chat.settings")
 
 import riot_chat.startup as startup
 acc_token = startup.run()
-# print(acc_token)
+
 application = get_wsgi_application()

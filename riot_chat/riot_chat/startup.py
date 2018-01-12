@@ -1,11 +1,9 @@
-import sys,os
+import os
+from riot_chat.settings.base import BASE_DIR
 
 def run():
-    path2 = os.path.dirname(os.path.expanduser(os.path.abspath(__file__)))
-    # print(path2)
-    if path2 not in sys.path:
-        sys.path.append('path2')
-    key_obj = open('key.py','r')
+    path_file = os.path.join(BASE_DIR,'key.py')
+    key_obj = open(path_file,'r')
     key = key_obj.read().rstrip()
     key_obj.close()
     return key
