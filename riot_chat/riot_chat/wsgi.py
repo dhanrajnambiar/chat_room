@@ -16,5 +16,5 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "riot_chat.settings")
 
 import riot_chat.startup as startup
 acc_token = startup.run()
-print(acc_token)
+# print(acc_token)
 application = get_wsgi_application()
