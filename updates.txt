@@ -1,3 +1,26 @@
+12th jan 2018:
+--------------
+Succeded in rectifying file not found error by importing 'BASE_DIR' parameter from settings module
+and using os.path.join(BASE_DIR, 'key.py') to obtain the file path & using open() on the file path.
+Found a hint that certain keys can be stored as environment var's in wsgi.py file. But didn't try out
+
+Now the server started working at 'http://matrix89.pythonanywhere.com' ; But some other error's popped up
+trying to post the messages as indicated below;
+
+OSError: Tunnel connection failed: 403 Forbidden
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='matrix.org', port=8448): Max retries exceeded
+
+Seems that there is something called "whitelist" of websites whose API's can be accessed by free beginner
+account user's. I use a beginner account. For paid user's there is unrestricted access to all site API'S.
+Here is link to whitelist. https://www.pythonanywhere.com/whitelist/
+
+From my local server, I have tried sending few messages to the two test rooms, as mentioned in assignment
+whoose link is given below.
+test_room_1: https://riot.im/app/#/room/!whKbuarNiMcNeMMlVg:matrix.org
+test_room_2: https://riot.im/app/#/room/!iCoOVDrUqeATFFdwyZ:matrix.org
+
+All the messages send by "Dhanraj" are the ones tested by me from local server "http://localhost.com/8000"
+
 11th jan 2108:
 --------------
 
@@ -10,7 +33,7 @@ def key_obtain(file_name):
     key_obj = open(file_name,'r')
     key = key_obj.read().rstrip()
     key_obj.close()
-    return key 
+    return key
 
 def post_message(msg,r_id_1,r_id_2,f_name):
     acc = key_obtain(f_name)
@@ -18,7 +41,7 @@ def post_message(msg,r_id_1,r_id_2,f_name):
     url = "https://matrix.org:8448/_matrix/client/r0/rooms/%21{0}/send/m.room.message?access_token={1}".format(r_id_1, acc)
     r = requests.post(url, data = json.dumps(d), verify = False)
     url = "https://matrix.org:8448/_matrix/client/r0/rooms/%21{0}/send/m.room.message?access_token={1}".format(r_id_2, acc)
-    q = requests.post(url, data = json.dumps(d), verify = False)  
+    q = requests.post(url, data = json.dumps(d), verify = False)
 
 room_id_1 = "whKbuarNiMcNeMMlVg:matrix.org" #my test_room_2 internal id
 room_id_2 = "iCoOVDrUqeATFFdwyZ:matrix.org" #my test_room_1 internal id
@@ -191,7 +214,7 @@ r = requests.get("https://localhost:8448/_matrix/client/r0/sync?access_token=MDA
 
 >>>for i in json.loads(r.content.decode()):
 ...     print(i)
-... 
+...
 rooms
 device_lists
 groups
@@ -231,7 +254,7 @@ vi lib/python3.5/site-packages/synapse/storage/event_federation.py
 entered "from multiprocessing import Queue"
 and tried configuring again.
 But still the same error
-There is no other file named Queue.py in the directory containing the event_federeation.py file 
+There is no other file named Queue.py in the directory containing the event_federeation.py file
 rectified that mistake by renaming Queue with queue
 
 Similar errors related to packages compatability between python2 and python3
@@ -248,8 +271,3 @@ a) Started with second assignment
 b)created riot.im account and two test chat rooms. saved the access token of my account.
 c)started going through the api's of matrix, which would be needed for the django project.
 d)how to convert curl commands in api's to functions of requests module
-	
-
-
-
-
